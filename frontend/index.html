@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard - Smart Phishing Detection</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="shield-icon">🛡️</div>
+                <h1>PhishGuard</h1>
+            </div>
+            <p class="tagline">AI-Powered Phishing Detection System</p>
+        </header>
+
+        <main>
+            <!-- Input Section -->
+            <section class="input-section">
+                <h2>Check a URL</h2>
+                <p>Enter any URL to analyze whether it's a phishing attempt or legitimate.</p>
+                
+                <div class="input-group">
+                    <input type="text" id="urlInput" placeholder="https://example.com" 
+                           onkeydown="if(event.key==='Enter') checkURL()">
+                    <button id="checkBtn" onclick="checkURL()">
+                        <span>Analyze</span>
+                        <span class="spinner hidden">⟳</span>
+                    </button>
+                </div>
+
+                <div class="batch-option">
+                    <a href="#" onclick="toggleBatch()">Check multiple URLs →</a>
+                </div>
+                
+                <div id="batchInput" class="hidden">
+                    <textarea id="batchUrls" placeholder="Enter one URL per line&#10;https://example1.com&#10;https://example2.com" rows="4"></textarea>
+                    <button onclick="checkBatch()" class="secondary-btn">Check All</button>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="results" class="hidden">
+                <div class="result-header">
+                    <h2>Analysis Results</h2>
+                    <button class="secondary-btn" onclick="clearResults()">Clear</button>
+                </div>
+
+                <div id="resultCard" class="result-card">
+                    <!-- Dynamically populated -->
+                </div>
+
+                <div id="batchResults" class="hidden">
+                    <h3>Batch Results</h3>
+                    <div id="batchResultList"></div>
+                </div>
+
+                <div id="detailsSection" class="hidden">
+                    <h3>Detailed Analysis</h3>
+                    
+                    <div class="details-grid">
+                        <div class="detail-card">
+                            <h4>📊 Heuristic Analysis</h4>
+                            <div id="heuristicDetails"></div>
+                        </div>
+                        <div class="detail-card">
+                            <h4>🤖 ML Analysis</h4>
+                            <div id="mlDetails"></div>
+                        </div>
+                    </div>
+
+                    <div class="detail-card full-width">
+                        <h4>🔍 Feature Breakdown</h4>
+                        <div id="featureBreakdown"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Stats -->
+            <section class="stats-section">
+                <div class="stat-card">
+                    <span class="stat-value" id="totalChecked">0</span>
+                    <span class="stat-label">URLs Checked</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="phishingDetected">0</span>
+                    <span class="stat-label">Phishing Detected</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="safeCount">0</span>
+                    <span class="stat-label">Safe URLs</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="accuracyRate">--</span>
+                    <span class="stat-label">Accuracy</span>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>PhishGuard v2.0 — Smart Phishing Detection System</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PhishGuard | Smart Phishing Detector</title>
+    <style>
+        :root {
+            --bg-1: #06131f;
+            --bg-2: #0d1d2b;
+            --panel: rgba(10, 22, 34, 0.82);
+            --panel-strong: rgba(16, 31, 46, 0.96);
+            --line: rgba(128, 163, 187, 0.2);
+            --text: #edf7ff;
+            --muted: #9db6c9;
+            --primary: #57d0ff;
+            --primary-2: #7c8cff;
+            --safe: #38d39f;
+            --warn: #ffbf47;
+            --danger: #ff5c7d;
+            --shadow: 0 25px 70px rgba(14, 28, 44, 0.55);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(87, 208, 255, 0.18), transparent 32%),
+                radial-gradient(circle at bottom right, rgba(124, 140, 255, 0.18), transparent 30%),
+                linear-gradient(135deg, var(--bg-1), var(--bg-2));
+            color: var(--text);
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            padding: 32px 18px;
+        }
+
+        .container {
+            width: min(1100px, 100%);
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            padding: 14px 18px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: rgba(8, 18, 28, 0.45);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+            color: #031720;
+            font-size: 22px;
+            box-shadow: 0 14px 30px rgba(87, 208, 255, 0.38);
+        }
+
+        .status-pill {
+            border: 1px solid rgba(56, 211, 159, 0.35);
+            color: #9ef2d1;
+            background: rgba(56, 211, 159, 0.09);
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 0.83rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(13, 28, 42, 0.9), rgba(10, 22, 34, 0.76));
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .main-panel {
+            padding: 28px 28px 20px;
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            color: var(--primary);
+            font-size: 0.8rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2.3rem, 4vw, 4rem);
+            line-height: 1.05;
+            letter-spacing: -0.05em;
+        }
+
+        .accent {
+            background: linear-gradient(135deg, var(--primary), #8de0ff, #b9d4ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-top: 16px;
+            max-width: 600px;
+            line-height: 1.7;
+            font-size: 1.02rem;
+        }
+
+        .search-wrap {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            padding: 12px;
+            border: 1px solid rgba(120, 156, 190, 0.25);
+            background: rgba(7, 17, 27, 0.8);
+            border-radius: 18px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .search-wrap input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 1.04rem;
+            padding: 14px 16px;
+            outline: none;
+        }
+
+        .search-wrap input::placeholder {
+            color: rgba(157, 182, 201, 0.8);
+        }
+
+        .btn {
+            border: none;
+            border-radius: 14px;
+            padding: 15px 22px;
+            font-weight: 800;
+            font-size: 0.96rem;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            color: #021822;
+            background: linear-gradient(135deg, var(--primary), #9ae5ff);
+            box-shadow: 0 12px 28px rgba(87, 208, 255, 0.35);
+        }
+
+        .side-panel {
+            padding: 22px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100%;
+        }
+
+        .mini-title {
+            color: var(--muted);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            margin-bottom: 12px;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 12px;
+        }
+
+        .metric {
+            background: rgba(7, 17, 27, 0.7);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 14px 12px;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .metric-label {
+            font-size: 0.72rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            border-radius: 999px;
+            padding: 7px 10px;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 0.6fr;
+            gap: 24px;
+        }
+
+        .result-panel, .details-panel {
+            padding: 22px 22px 18px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .panel-title {
+            margin: 0;
+            font-size: 1.1rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .verdict {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 130px;
+            padding: 9px 14px;
+            border-radius: 999px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            border: 1px solid transparent;
+        }
+
+        .verdict.safe {
+            background: rgba(56, 211, 159, 0.12);
+            color: #9ef2d1;
+            border-color: rgba(56, 211, 159, 0.35);
+        }
+
+        .verdict.suspicious {
+            background: rgba(255, 191, 71, 0.12);
+            color: #ffd88a;
+            border-color: rgba(255, 191, 71, 0.35);
+        }
+
+        .verdict.phishing {
+            background: rgba(255, 92, 125, 0.12);
+            color: #ffb2c2;
+            border-color: rgba(255, 92, 125, 0.35);
+        }
+
+        .score-ring {
+            width: 150px;
+            height: 150px;
+            margin: 8px auto 18px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: conic-gradient(var(--safe) 0deg, var(--safe) calc(var(--score) * 3.6deg), rgba(255,255,255,0.07) 0deg);
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(255,255,255,0.04);
+        }
+
+        .score-ring::before {
+            content: "";
+            position: absolute;
+            inset: 14px;
+            border-radius: 50%;
+            background: rgba(6, 21, 31, 0.9);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .score-value {
+            position: relative;
+            z-index: 1;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.06em;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .info-box {
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--line);
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .reasons {
+            list-style: none;
+            padding: 0;
+            margin: 18px 0 0;
+            display: grid;
+            gap: 10px;
+        }
+
+        .reasons li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.025);
+            border: 1px solid var(--line);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .bullet {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+            flex: 0 0 8px;
+        }
+
+        .details-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--line);
+        }
+
+        .detail-item span:first-child {
+            color: var(--muted);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .detail-item strong {
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 860px) {
+            .hero, .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-wrap {
+                flex-direction: column;
+            }
+
+            .topbar {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-mark">🛡️</div>
+                <span>PHISHGUARD</span>
+            </div>
+            <div class="status-pill" id="statusPill">SYSTEM ONLINE</div>
+        </header>
+
+        <section class="hero">
+            <div class="card main-panel">
+                <p class="eyebrow">AI-powered security</p>
+                <h1>Detect phishing <span class="accent">before it strikes.</span></h1>
+                <p class="subtitle">
+                    Analyze suspicious URLs using intelligent heuristic rules and machine learning scoring to protect users from malicious websites.
+                </p>
+
+                <div class="search-wrap">
+                    <input id="urlInput" type="text" placeholder="Enter a URL to scan..." value="https://paypal.com" />
+                    <button class="btn btn-primary" id="checkBtn">Analyze URL</button>
+                </div>
+            </div>
+
+            <aside class="card side-panel">
+                <div>
+                    <div class="mini-title">Security overview</div>
+                    <div class="metric-grid">
+                        <div class="metric">
+                            <div class="metric-value" id="safeCount">99.2%</div>
+                            <div class="metric-label">Safe rate</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" id="riskCount">3.8x</div>
+                            <div class="metric-label">Threat index</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="badges">
+                    <span class="badge">ML Model</span>
+                    <span class="badge">Heuristics</span>
+                    <span class="badge">Threat intel</span>
+                </div>
+            </aside>
+        </section>
+
+        <section class="content-grid">
+            <div class="card result-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Scan result</h2>
+                    <div id="verdict" class="verdict safe">SAFE</div>
+                </div>
+
+                <div class="score-ring" id="scoreRing" style="--score: 0;">
+                    <div class="score-value" id="scoreValue">0%</div>
+                </div>
+
+                <div class="result-grid">
+                    <div class="info-box">
+                        <div class="info-label">Severity</div>
+                        <div class="info-value" id="severityValue">LOW</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-label">Confidence</div>
+                        <div class="info-value" id="confidenceValue">0%</div>
+                    </div>
+                </div>
+
+                <ul class="reasons" id="reasonsList">
+                    <li><span class="bullet"></span><span>Waiting for the next URL analysis...</span></li>
+                </ul>
+            </div>
+
+            <div class="card details-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Details</h2>
+                </div>
+
+                <div class="details-list">
+                    <div class="detail-item">
+                        <span>URL</span>
+                        <strong id="detailUrl">-</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Heuristic score</span>
+                        <strong id="heuristicScore">-</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>ML score</span>
+                        <strong id="mlScore">-</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Model status</span>
+                        <strong id="mlStatus">Checking...</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const urlInput = document.getElementById('urlInput');
+        const checkBtn = document.getElementById('checkBtn');
+        const verdictEl = document.getElementById('verdict');
+        const severityValue = document.getElementById('severityValue');
+        const confidenceValue = document.getElementById('confidenceValue');
+        const scoreValue = document.getElementById('scoreValue');
+        const scoreRing = document.getElementById('scoreRing');
+        const reasonsList = document.getElementById('reasonsList');
+        const mlStatus = document.getElementById('mlStatus');
+        const detailUrl = document.getElementById('detailUrl');
+        const heuristicScore = document.getElementById('heuristicScore');
+        const mlScore = document.getElementById('mlScore');
+        const statusPill = document.getElementById('statusPill');
+
+        async function healthCheck() {
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                if (data && data.status === 'ok') {
+                    statusPill.textContent = 'SYSTEM ONLINE';
+                    statusPill.style.borderColor = 'rgba(56, 211, 159, 0.35)';
+                    statusPill.style.color = '#9ef2d1';
+                    mlStatus.textContent = data.ml_available ? 'ML READY' : 'HEURISTIC ONLY';
+                }
+            } catch (error) {
+                statusPill.textContent = 'OFFLINE';
+                statusPill.style.borderColor = 'rgba(255, 92, 125, 0.35)';
+                statusPill.style.color = '#ffb2c2';
+                mlStatus.textContent = 'UNAVAILABLE';
+            }
+        }
+
+        function setVerdict(verdict) {
+            verdictEl.className = 'verdict';
+            if (verdict === 'safe') {
+                verdictEl.classList.add('safe');
+                verdictEl.textContent = 'SAFE';
+            } else if (verdict === 'suspicious') {
+                verdictEl.classList.add('suspicious');
+                verdictEl.textContent = 'SUSPICIOUS';
+            } else {
+                verdictEl.classList.add('phishing');
+                verdictEl.textContent = 'PHISHING';
+            }
+        }
+
+        function setScore(percent) {
+            const clamped = Math.max(0, Math.min(100, percent));
+            scoreValue.textContent = `${Math.round(clamped)}%`;
+            scoreRing.style.setProperty('--score', clamped);
+            if (clamped < 50) {
+                scoreRing.style.background = 'conic-gradient(var(--safe) 0deg, var(--safe) ' + (clamped * 3.6) + 'deg, rgba(255,255,255,0.07) 0deg)';
+            } else if (clamped < 80) {
+                scoreRing.style.background = 'conic-gradient(var(--warn) 0deg, var(--warn) ' + (clamped * 3.6) + 'deg, rgba(255,255,255,0.07) 0deg)';
+            } else {
+                scoreRing.style.background = 'conic-gradient(var(--danger) 0deg, var(--danger) ' + (clamped * 3.6) + 'deg, rgba(255,255,255,0.07) 0deg)';
+            }
+        }
+
+        function updateResults(data) {
+            const score = Number(data.combined_score || 0) * 100;
+            const confidence = Number(data.confidence || 0) * 100;
+            const verdict = data.verdict || 'safe';
+
+            setVerdict(verdict);
+            setScore(score);
+            severityValue.textContent = (data.severity || 'LOW').toUpperCase();
+            confidenceValue.textContent = `${Math.round(confidence)}%`;
+            detailUrl.textContent = data.url || '-';
+
+            const heuristicScoreValue = data.heuristic && data.heuristic.heuristic_score != null
+                ? `${Number(data.heuristic.heuristic_score).toFixed(1)}/100`
+                : '-';
+            heuristicScore.textContent = heuristicScoreValue;
+
+            const mlValue = data.ml && data.ml.ml_probability != null
+                ? `${(Number(data.ml.ml_probability) * 100).toFixed(1)}%`
+                : 'N/A';
+            mlScore.textContent = mlValue;
+
+            const reasons = data.heuristic && data.heuristic.heuristic_reasons && data.heuristic.heuristic_reasons.length
+                ? data.heuristic.heuristic_reasons
+                : ['No major heuristic risks detected.'];
+
+            reasonsList.innerHTML = reasons
+                .slice(0, 4)
+                .map(reason => `<li><span class="bullet"></span><span>${reason}</span></li>`)
+                .join('');
+        }
+
+        async function analyzeUrl() {
+            const url = urlInput.value.trim();
+            if (!url) {
+                alert('Please enter a URL.');
+                return;
+            }
+
+            checkBtn.disabled = true;
+            checkBtn.textContent = 'Analyzing...';
+
+            try {
+                const response = await fetch('/api/check', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to analyze URL');
+                }
+
+                updateResults(data);
+            } catch (error) {
+                verdictEl.className = 'verdict phishing';
+                verdictEl.textContent = 'ERROR';
+                severityValue.textContent = 'UNKNOWN';
+                confidenceValue.textContent = '0%';
+                reasonsList.innerHTML = `<li><span class="bullet"></span><span>${error.message || 'Unable to reach the analysis API.'}</span></li>`;
+            } finally {
+                checkBtn.disabled = false;
+                checkBtn.textContent = 'Analyze URL';
+            }
+        }
+
+        checkBtn.addEventListener('click', analyzeUrl);
+        urlInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') analyzeUrl();
+        });
+
+        healthCheck();
+        analyzeUrl();
+    </script>
+</body>
+</html>
