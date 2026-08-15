@@ -1746,4 +1746,4 @@ def find_matching_templates(url, threshold=70):
                         "template": template,
                         "threat_score": template["threat_score"]
                     })
-    return matches
+    return matches 
