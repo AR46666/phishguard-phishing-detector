@@ -18,8 +18,9 @@ class HybridScorer:
         try:
             self.ml_classifier._load_model()
             self.ml_available = True
-        except FileNotFoundError:
-            print("ML model not found. Please train the model first (run model.train()).")
+        except Exception as e:
+            # Any error while loading the model should not crash the app.
+            print(f"Warning: ML model could not be loaded: {e}")
             print("Falling back to heuristic-only mode.")
             self.ml_available = False
     

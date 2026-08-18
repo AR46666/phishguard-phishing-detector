@@ -11,7 +11,42 @@ from .feature_extractor import FeatureExtractor
 class PhishingClassifier:
     """Machine Learning classifier for phishing URL detection."""
     
-    def __init__(self, model_path='../models/phishing_model.pkl', scaler_path='../models/scaler.pkl'):
+    def __init__(self, model_path=None, scaler_path=None):
+        # Determine reasonable defaults relative to the project root
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        models_dir = os.path.join(base_dir, 'models')
+
+        # If explicit paths not provided, try common filenames and fall back
+        if model_path is None:
+            candidate = os.path.join(models_dir, 'phishing_model.pkl')
+            if os.path.exists(candidate):
+                model_path = candidate
+            else:
+                # Try to find any file that looks like a phishing model
+                model_path = None
+                try:
+                    for fname in os.listdir(models_dir):
+                        if 'phish' in fname.lower():
+                            model_path = os.path.join(models_dir, fname)
+                            break
+                except Exception:
+                    model_path = os.path.join('..', 'models', 'phishing_model.pkl')
+
+        if scaler_path is None:
+            candidate = os.path.join(models_dir, 'scaler.pkl')
+            if os.path.exists(candidate):
+                scaler_path = candidate
+            else:
+                scaler_path = None
+                try:
+                    for fname in os.listdir(models_dir):
+                        if 'scaler' in fname.lower():
+                            scaler_path = os.path.join(models_dir, fname)
+                            break
+                except Exception:
+                    scaler_path = os.path.join('..', 'models', 'scaler.pkl')
+
+        # Keep stored values (may still be relative paths if models not present)
         self.model_path = model_path
         self.scaler_path = scaler_path
         self.model = None
