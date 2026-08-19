@@ -1,7 +1,0 @@
-{
-  "python.defaultInterpreterPath": "c:\\Users\\FAYIZ MUHAMMAD\\Documents\\PROJECT\\phishguard\\.venv\\Scripts\\python.exe",
-  "python.analysis.extraPaths": [
-    "${workspaceFolder}\\.venv\\Lib\\site-packages",
-    "${workspaceFolder}\\backend"
-  ]
-}

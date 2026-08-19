@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import joblib
 import os
@@ -91,6 +90,7 @@ class PhishingClassifier:
         """
         
         if csv_path:
+            import pandas as pd
             df = pd.read_csv(csv_path)
             urls = df['url'].values
             labels = df['label'].values
@@ -213,6 +213,8 @@ class PhishingClassifier:
     
     def get_feature_importance(self):
         """Return feature importance DataFrame."""
+        import pandas as pd
+
         if self.model is None:
             self._load_model()
         
