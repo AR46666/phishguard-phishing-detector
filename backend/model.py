@@ -189,6 +189,7 @@ class PhishingClassifier:
         """Predict for a list of URLs."""
         results = []
         for url in urls:
+            
             results.append(self.predict(url))
         return results
     
