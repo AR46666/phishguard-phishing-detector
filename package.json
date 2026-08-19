@@ -1,0 +1,12 @@
+{
+  "name": "phishguard-phishing-detector",
+  "version": "2.0.0",
+  "description": "AI-Powered Phishing Detection System",
+  "scripts": {
+    "postinstall": "echo 'Analytics package installed successfully'"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.1.1"
+  },
+  "private": true
+}
